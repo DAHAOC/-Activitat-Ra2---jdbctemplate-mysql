@@ -17,46 +17,47 @@ public class UserController {
     private UserRepository repository;
 
 
-    // CREATE
+    // CREATE: crea un nou usuari a la base de dades
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody User user) {
-        repository.save(user);
+        
+        repository.save(user);// crida el repositori per guardar l'usuari
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuari creat correctament");
     }
 
-    // READ ALL
+    // READ ALL: retorna tots els usuaris
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = repository.findAll();
+        List<User> users = repository.findAll(); // consulta tots els usuaris
         return ResponseEntity.status(HttpStatus.OK).body(users.isEmpty() ? null : users);
     }
 
-    // READ BY ID
+    // READ BY ID: retorna un usuari concret per id
     @GetMapping("/{user_id}")
     public ResponseEntity<User> getUserById(@PathVariable Long user_id) {
-        User user = repository.findById(user_id);
+        User user = repository.findById(user_id); // consulta l'usuari per id
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    // UPDATE COMPLET
+    // UPDATE COMPLET: actualitza tots els camps d'un usuari
     @PutMapping("/{user_id}")
     public ResponseEntity<String> updateUser(@PathVariable Long user_id, @RequestBody User user) {
-        user.setId(user_id);
-        repository.update(user);
+        user.setId(user_id); // assegura que l'id coincideixi amb el path
+        repository.update(user); // crida el repositori per actualitzar
         return ResponseEntity.status(HttpStatus.OK).body("Usuari actualitzat correctament");
     }
 
-    // UPDATE PARCIAL (name)
+    // UPDATE PARCIAL: actualitza només el nom de l'usuari
     @PatchMapping("/{user_id}/name")
     public ResponseEntity<String> updateUserName(@PathVariable Long user_id, @RequestParam String name) {
-        repository.updateName(user_id, name);
+        repository.updateName(user_id, name); // actualitza només el nom
         return ResponseEntity.status(HttpStatus.OK).body("Nom actualitzat correctament");
     }
 
-    // DELETE
+    // DELETE: elimina un usuari per id
     @DeleteMapping("/{user_id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long user_id) {
-        repository.delete(user_id);
+        repository.delete(user_id); // crida el repositori per eliminar l'usuari
         return ResponseEntity.status(HttpStatus.OK).body("Usuari eliminat correctament");
     }
 }
