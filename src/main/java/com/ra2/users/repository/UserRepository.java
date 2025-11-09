@@ -18,6 +18,15 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
+
+    //ACTUALITZAR IMAGE PATH
+    public int updateImagePath(Long id, String imagePath) {
+        String sql = "UPDATE users SET image_path = ?, dataUpdated = ? WHERE id = ?";
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        return jdbcTemplate.update(sql, imagePath, now, id);
+    }
+
     // RowMapper: transforma un ResultSet de SQL a un objecte User
     private RowMapper<User> userRowMapper = (ResultSet rs, int rowNum) -> {
         User user = new User();

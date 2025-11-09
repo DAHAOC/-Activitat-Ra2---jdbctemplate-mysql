@@ -12,6 +12,16 @@ public class User {
     private Timestamp dataCreated;
     private Timestamp dataUpdated;
     
+
+
+
+    private String imagePath;
+
+    public String getImagePath() { return imagePath;}
+
+    public void setImagePath(String imagePath) {this.imagePath = imagePath;}
+
+    
     public Long getId() {
         return id;
     }

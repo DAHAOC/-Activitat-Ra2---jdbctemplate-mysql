@@ -10,6 +10,9 @@ import com.ra2.users.repository.UserRepository;
 public class UserService {
     private final UserRepository repository;
 
+
+    //RUTA base per desar fitxers
+    
     public UserService(UserRepository repository) {
         this.repository = repository;
 

@@ -3,11 +3,12 @@ package com.ra2.users.controller;
 import com.ra2.users.model.User;
 import com.ra2.users.service.UserService;
 
-import org.apache.catalina.connector.Response;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.List;
 
@@ -18,6 +19,15 @@ public class UserController {
     public UserController(UserService service) {
         this.service = service;
     }
+
+
+
+
+
+
+
+
+    
 
     // CREATE: crea un nou usuari a la base de dades
     @PostMapping
