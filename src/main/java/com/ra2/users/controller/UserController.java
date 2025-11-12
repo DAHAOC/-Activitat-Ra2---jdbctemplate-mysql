@@ -3,36 +3,27 @@ package com.ra2.users.controller;
 import com.ra2.users.model.User;
 import com.ra2.users.service.UserService;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users") // Ruta base
 public class UserController {
     private UserService service;
+
     public UserController(UserService service) {
         this.service = service;
     }
 
-
-
-
-
-
-
-
-    
-
     // CREATE: crea un nou usuari a la base de dades
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody User user) {
-        
+
         service.saveUser(user);// crida el repositori per guardar l'usuari
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuari creat correctament");
     }
@@ -73,13 +64,19 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("Usuari eliminat correctament");
     }
 
-    @PostMapping("/{user_id}/uploadImage")
-    public String uploadUserImage(@PathVariable Long user_id, @RequestParam MultipartFile image) {
-        return service.uploadImage(user_id, image);
-        
-    }   
-
-
-
+    @PostMapping("/{user_id}/image")
+    public ResponseEntity<String> uploadUserImage(
+            @PathVariable Long user_id,
+            @RequestParam("imageFile") MultipartFile imageFile) {
+        try {
+            String imageUrl = service.uploadUserImage(user_id, imageFile);
+            if (imageUrl == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuari no trobat");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body("Imatge pujada correctament: " + imageUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al desar la imatge");
+        }
+    }
 
 }

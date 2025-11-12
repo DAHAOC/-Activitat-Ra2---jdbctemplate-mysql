@@ -18,9 +18,7 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
-
-    //ACTUALITZAR IMAGE PATH
+    // ACTUALITZAR IMAGE PATH
     public int updateImagePath(Long id, String imagePath) {
         String sql = "UPDATE users SET image_path = ?, dataUpdated = ? WHERE id = ?";
         Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -38,6 +36,7 @@ public class UserRepository {
         user.setUltimAcces(rs.getTimestamp("ultimAcces"));
         user.setDataCreated(rs.getTimestamp("dataCreated"));
         user.setDataUpdated(rs.getTimestamp("dataUpdated"));
+        user.setImagePath(rs.getString("image_path"));
         return user;
     };
 
@@ -45,7 +44,8 @@ public class UserRepository {
     public int save(User user) {
         String sql = "INSERT INTO users (name, description, email, password, dataCreated, dataUpdated) VALUES (?, ?, ?, ?, ?, ?)";
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        return jdbcTemplate.update(sql, user.getName(), user.getDescription(), user.getEmail(), user.getPassword(), now, now);
+        return jdbcTemplate.update(sql, user.getName(), user.getDescription(), user.getEmail(), user.getPassword(), now,
+                now);
     }
 
     // READ ALL
@@ -65,7 +65,8 @@ public class UserRepository {
     public int update(User user) {
         String sql = "UPDATE users SET name = ?, description = ?, email = ?, password = ?, dataUpdated = ? WHERE id = ?";
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        return jdbcTemplate.update(sql, user.getName(), user.getDescription(), user.getEmail(), user.getPassword(), now, user.getId());
+        return jdbcTemplate.update(sql, user.getName(), user.getDescription(), user.getEmail(), user.getPassword(), now,
+                user.getId());
     }
 
     // UPDATE PARTIAL (name)
@@ -80,4 +81,7 @@ public class UserRepository {
         String sql = "DELETE FROM users WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }
+
+    
+    
 }

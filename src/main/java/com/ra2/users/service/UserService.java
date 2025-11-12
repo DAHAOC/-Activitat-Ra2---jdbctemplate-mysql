@@ -1,24 +1,30 @@
 package com.ra2.users.service;
-import com.ra2.users.model.User;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import com.ra2.users.model.User;
 import com.ra2.users.repository.UserRepository;
 
 @Service
 public class UserService {
     private final UserRepository repository;
 
+    // RUTA base per desar fitxers
 
-    //RUTA base per desar fitxers
-    
     public UserService(UserRepository repository) {
         this.repository = repository;
 
     }
 
-    public User getUserById(Long id ) {
+    public User getUserById(Long id) {
         return repository.findById(id);
     }
 
@@ -40,18 +46,30 @@ public class UserService {
 
     public void updateUserName(Long id, String name) {
         repository.updateName(id, name);
-    }   
+    }
 
-    public String uploadImage(Long user_id, MultipartFile imageFile) {
-        User user = repository.findById(user_id);
-        
-        if(user != null) {
-           
-            return "Usuari trobat";
-        } else {
-            return "Usuari no trobat";
+    public String uploadUserImage(Long userId, MultipartFile imageFile) throws IOException {
+        User user = repository.findById(userId);
+        if (user == null) {
+            return null; // usuari no trobat
         }
+
+        // Carpeta on guardarem la imatge
+        String folderPath = "src/main/resources/public/images";
+        Files.createDirectories(Paths.get(folderPath));
+
+        // Nom del fitxer: user_1_timestamp.jpg
+        String fileName = "user_" + userId + "_" + System.currentTimeMillis() + ".jpg";
+        Path imagePath = Paths.get(folderPath, fileName);
+
+        // Desa la imatge al disc
+        Files.write(imagePath, imageFile.getBytes(), StandardOpenOption.CREATE);
+
+        // Desa la ruta a la base de dades
+        String dbPath = "/images/" + fileName;
+        repository.updateImagePath(userId, dbPath);
+
+        return dbPath;
     }
 
 }
- 
