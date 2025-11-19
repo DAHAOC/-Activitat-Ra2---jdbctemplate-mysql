@@ -1,10 +1,16 @@
 package com.ra2.users.service;
 
+import java.io.BufferedReader;
+
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -16,7 +22,7 @@ import com.ra2.users.repository.UserRepository;
 @Service
 public class UserService {
     private final UserRepository repository;
-
+    private final String UPLOAD_CSV_DIR = "src/main/resources/public/csv_processed";
     // RUTA base per desar fitxers
 
     public UserService(UserRepository repository) {
@@ -70,6 +76,67 @@ public class UserService {
         repository.updateImagePath(userId, dbPath);
 
         return dbPath;
+    }
+
+    // Pujar csv
+    public int processCSV(MultipartFile csvFile) throws Exception {
+        List<User> users = new ArrayList<>();
+        int lineNumber = 0;
+
+        // Leer contenido del CSV
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile.getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lineNumber++;
+
+                // Saltar la cabecera
+                if (lineNumber == 1)
+                    continue;
+
+                String[] fields = line.split(",");
+
+                // Validar que tenga al menos 3 campos: name, email, password
+                if (fields.length < 3) {
+                    System.err.println(
+                            "Línea " + lineNumber + " ignorada, menos de 3 campos: " + Arrays.toString(fields));
+                    continue;
+                }
+
+                User user = new User();
+                user.setName(fields[0].trim());
+                user.setEmail(fields[1].trim());
+                user.setPassword(fields[2].trim());
+
+                // Description opcional
+                user.setDescription(fields.length > 3 ? fields[3].trim() : "Sense descripcio");
+
+                users.add(user);
+            }
+        }
+
+        // Guardar en base de datos
+        int count = 0;
+        for (User user : users) {
+            try {
+                repository.save(user);
+                count++;
+            } catch (Exception e) {
+                System.err.println("Error insertando usuario " + user.getEmail() + ": " + e.getMessage());
+            }
+        }
+
+        // Guardar el archivo CSV en carpeta csv_processed
+        String folderPath = "src/main/resources/public/csv_processed"; // carpeta a nivel de proyecto
+        Path directoryPath = Paths.get(folderPath);
+        if (Files.notExists(directoryPath)) {
+            Files.createDirectories(directoryPath);
+        }
+
+        Path filePath = Paths.get(folderPath, csvFile.getOriginalFilename());
+        Files.copy(csvFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        System.out.println("CSV procesado correctamente. Registros agregados: " + count);
+        return count;
     }
 
 }

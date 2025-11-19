@@ -64,6 +64,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("Usuari eliminat correctament");
     }
 
+    // PUJAR IMATGE per a un usuari
+
     @PostMapping("/{user_id}/image")
     public ResponseEntity<String> uploadUserImage(
             @PathVariable Long user_id,
@@ -79,4 +81,16 @@ public class UserController {
         }
     }
 
+
+    // CARREGA CSV
+    @PostMapping("/upload-csv")
+    public ResponseEntity<?> uploadUsersCSV(@RequestParam("csvFile") MultipartFile csvFile) {
+        try {
+            int count = service.processCSV(csvFile);
+            return ResponseEntity.ok("S'han afegit " + count + " registres.");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en processar el CSV: " + e.getMessage());
+        }
+    }
 }
