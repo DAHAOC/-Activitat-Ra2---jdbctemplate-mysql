@@ -1,142 +1,173 @@
 package com.ra2.users.service;
 
 import java.io.BufferedReader;
-
-import java.io.InputStreamReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
+import java.io.InputStreamReader;
+import java.nio.file.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ra2.users.logging.CustomLogging;
 import com.ra2.users.model.User;
 import com.ra2.users.repository.UserRepository;
 
 @Service
 public class UserService {
+
     private final UserRepository repository;
-    private final String UPLOAD_CSV_DIR = "src/main/resources/public/csv_processed";
-    // RUTA base per desar fitxers
+    private final CustomLogging customLogging;
 
-    public UserService(UserRepository repository) {
+    private static final String IMAGE_DIR = "src/main/resources/public/images";
+    private static final String CSV_DIR = "src/main/resources/public/csv_processed";
+
+    public UserService(UserRepository repository, CustomLogging customLogging) {
         this.repository = repository;
-
+        this.customLogging = customLogging;
     }
 
     public User getUserById(Long id) {
-        return repository.findById(id);
+        try {
+            User user = repository.findById(id);
+            customLogging.logInfo("UserService", "getUserById", "Usuari recuperat: " + (user != null ? user.getEmail() : "no trobat"));
+            return user;
+        } catch (Exception e) {
+            customLogging.logError("UserService", "getUserById", "Error recuperant usuari amb ID " + id, e);
+            return null;
+        }
     }
 
     public List<User> getAllUsers() {
-        return repository.findAll();
+        try {
+            List<User> users = repository.findAll();
+            customLogging.logInfo("UserService", "getAllUsers", "Total usuaris recuperats: " + users.size());
+            return users;
+        } catch (Exception e) {
+            customLogging.logError("UserService", "getAllUsers", "Error recuperant tots els usuaris", e);
+            return new ArrayList<>();
+        }
     }
 
     public void saveUser(User user) {
-        repository.save(user);
+        LocalDateTime now = LocalDateTime.now();
+        if (user.getDataCreated() == null) user.setDataCreated(now);
+        if (user.getDataUpdated() == null) user.setDataUpdated(now);
+
+        try {
+            repository.save(user);
+            customLogging.logInfo("UserService", "saveUser", "Usuari creat correctament: " + user.getEmail());
+        } catch (Exception e) {
+            customLogging.logError("UserService", "saveUser", "Error creant usuari: " + user.getEmail(), e);
+            throw e;
+        }
     }
 
     public void updateUser(User user) {
-        repository.update(user);
-    }
-
-    public void deleteUser(Long id) {
-        repository.delete(id);
+        user.setDataUpdated(LocalDateTime.now());
+        try {
+            repository.update(user);
+            customLogging.logInfo("UserService", "updateUser", "Usuari actualitzat: " + user.getEmail());
+        } catch (Exception e) {
+            customLogging.logError("UserService", "updateUser", "Error actualitzant usuari: " + user.getEmail(), e);
+            throw e;
+        }
     }
 
     public void updateUserName(Long id, String name) {
-        repository.updateName(id, name);
+        try {
+            repository.updateName(id, name, LocalDateTime.now());
+            customLogging.logInfo("UserService", "updateUserName", "Nom actualitzat per usuari ID " + id + " a: " + name);
+        } catch (Exception e) {
+            customLogging.logError("UserService", "updateUserName", "Error actualitzant nom usuari ID " + id, e);
+            throw e;
+        }
+    }
+
+    public void deleteUser(Long id) {
+        try {
+            repository.delete(id);
+            customLogging.logInfo("UserService", "deleteUser", "Usuari eliminat ID: " + id);
+        } catch (Exception e) {
+            customLogging.logError("UserService", "deleteUser", "Error eliminant usuari ID: " + id, e);
+            throw e;
+        }
     }
 
     public String uploadUserImage(Long userId, MultipartFile imageFile) throws IOException {
-        User user = repository.findById(userId);
-        if (user == null) {
-            return null; // usuari no trobat
+        try {
+            User user = repository.findById(userId);
+            if (user == null) {
+                customLogging.logInfo("UserService", "uploadUserImage", "Usuari no trobat amb ID " + userId);
+                return null;
+            }
+
+            Files.createDirectories(Paths.get(IMAGE_DIR));
+            String fileName = "user_" + userId + "_" + System.currentTimeMillis() + ".jpg";
+            Path imagePath = Paths.get(IMAGE_DIR, fileName);
+            Files.write(imagePath, imageFile.getBytes(), StandardOpenOption.CREATE);
+
+            String dbPath = "/images/" + fileName;
+            repository.updateImagePath(userId, dbPath, LocalDateTime.now());
+
+            customLogging.logInfo("UserService", "uploadUserImage", "Imatge pujada per usuari ID " + userId + ": " + fileName);
+            return dbPath;
+        } catch (Exception e) {
+            customLogging.logError("UserService", "uploadUserImage", "Error pujant imatge per usuari ID " + userId, e);
+            throw e;
         }
-
-        // Carpeta on guardarem la imatge
-        String folderPath = "src/main/resources/public/images";
-        Files.createDirectories(Paths.get(folderPath));
-
-        // Nom del fitxer: user_1_timestamp.jpg
-        String fileName = "user_" + userId + "_" + System.currentTimeMillis() + ".jpg";
-        Path imagePath = Paths.get(folderPath, fileName);
-
-        // Desa la imatge al disc
-        Files.write(imagePath, imageFile.getBytes(), StandardOpenOption.CREATE);
-
-        // Desa la ruta a la base de dades
-        String dbPath = "/images/" + fileName;
-        repository.updateImagePath(userId, dbPath);
-
-        return dbPath;
     }
 
-    // Pujar csv
     public int processCSV(MultipartFile csvFile) throws Exception {
         List<User> users = new ArrayList<>();
         int lineNumber = 0;
 
-        // Leer contenido del CSV
         try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile.getInputStream()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 lineNumber++;
-
-                // Saltar la cabecera
-                if (lineNumber == 1)
-                    continue;
-
+                if (lineNumber == 1) continue; // cabecera
                 String[] fields = line.split(",");
-
-                // Validar que tenga al menos 3 campos: name, email, password
-                if (fields.length < 3) {
-                    System.err.println(
-                            "Línea " + lineNumber + " ignorada, menos de 3 campos: " + Arrays.toString(fields));
-                    continue;
-                }
+                if (fields.length < 3) continue;
 
                 User user = new User();
                 user.setName(fields[0].trim());
                 user.setEmail(fields[1].trim());
                 user.setPassword(fields[2].trim());
-
-                // Description opcional
                 user.setDescription(fields.length > 3 ? fields[3].trim() : "Sense descripcio");
+
+                LocalDateTime now = LocalDateTime.now();
+                user.setDataCreated(now);
+                user.setDataUpdated(now);
 
                 users.add(user);
             }
+        } catch (Exception e) {
+            customLogging.logError("UserService", "processCSV", "Error llegint CSV: " + csvFile.getOriginalFilename(), e);
+            throw e;
         }
 
-        // Guardar en base de datos
         int count = 0;
         for (User user : users) {
             try {
                 repository.save(user);
                 count++;
             } catch (Exception e) {
-                System.err.println("Error insertando usuario " + user.getEmail() + ": " + e.getMessage());
+                customLogging.logError("UserService", "processCSV", "Error guardant usuari CSV: " + user.getEmail(), e);
             }
         }
 
-        // Guardar el archivo CSV en carpeta csv_processed
-        String folderPath = "src/main/resources/public/csv_processed"; // carpeta a nivel de proyecto
-        Path directoryPath = Paths.get(folderPath);
-        if (Files.notExists(directoryPath)) {
-            Files.createDirectories(directoryPath);
+        try {
+            Files.createDirectories(Paths.get(CSV_DIR));
+            Path filePath = Paths.get(CSV_DIR, csvFile.getOriginalFilename());
+            Files.copy(csvFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            customLogging.logInfo("UserService", "processCSV", "CSV processat correctament: " + csvFile.getOriginalFilename() + ", usuaris afegits: " + count);
+        } catch (Exception e) {
+            customLogging.logError("UserService", "processCSV", "Error desant CSV processat: " + csvFile.getOriginalFilename(), e);
         }
 
-        Path filePath = Paths.get(folderPath, csvFile.getOriginalFilename());
-        Files.copy(csvFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        System.out.println("CSV procesado correctamente. Registros agregados: " + count);
         return count;
     }
-
 }

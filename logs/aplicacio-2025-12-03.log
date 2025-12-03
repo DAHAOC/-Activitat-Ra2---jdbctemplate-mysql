@@ -1,0 +1,83 @@
+[2025-12-03 18:36:13] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:36:13] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:36:25] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:36:25] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:40:55] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:40:55] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:41:11] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:41:11] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:41:29] INFO - UserService - saveUser - Creant nou usuari amb email: strfwafawfing
+[2025-12-03 18:41:29] INFO - UserRepository - save - Creant usuari amb email: strfwafawfing
+[2025-12-03 18:41:29] INFO - UserRepository - save - Usuari creat correctament amb email: strfwafawfing
+[2025-12-03 18:41:29] INFO - UserService - saveUser - Usuari creat correctament amb email: strfwafawfing
+[2025-12-03 18:41:38] INFO - UserService - getUserById - Consultant usuari amb id: 1
+[2025-12-03 18:41:38] INFO - UserRepository - findById - Consultant usuari amb id: 1
+[2025-12-03 18:41:38] ERROR - UserRepository - findById - Usuari amb id 1 no existeix
+[2025-12-03 18:41:38] ERROR - UserService - getUserById - Usuari amb id 1 no existeix
+[2025-12-03 18:41:50] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:41:50] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:41:54] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:41:54] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:42:23] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:42:23] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:42:45] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:42:45] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:43:02] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:43:02] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:43:35] INFO - UserService - saveUser - Creant nou usuari amb email: string
+[2025-12-03 18:43:35] INFO - UserRepository - save - Creant usuari amb email: string
+[2025-12-03 18:43:35] INFO - UserRepository - save - Usuari creat correctament amb email: string
+[2025-12-03 18:43:35] INFO - UserService - saveUser - Usuari creat correctament amb email: string
+[2025-12-03 18:43:43] INFO - UserService - getUserById - Consultant usuari amb id: 2
+[2025-12-03 18:43:43] INFO - UserRepository - findById - Consultant usuari amb id: 2
+[2025-12-03 18:43:43] ERROR - UserRepository - findById - Usuari amb id 2 no existeix
+[2025-12-03 18:43:43] ERROR - UserService - getUserById - Usuari amb id 2 no existeix
+[2025-12-03 18:50:37] INFO - UserService - saveUser - Creant nou usuari amb email: string
+[2025-12-03 18:50:37] INFO - UserRepository - save - Creant usuari amb email: string
+[2025-12-03 18:50:37] INFO - UserRepository - save - Usuari creat correctament amb email: string
+[2025-12-03 18:50:37] INFO - UserService - saveUser - Usuari creat correctament amb email: string
+[2025-12-03 18:51:17] INFO - UserService - getUserById - Consultant usuari amb id: 3
+[2025-12-03 18:51:17] INFO - UserRepository - findById - Consultant usuari amb id: 3
+[2025-12-03 18:51:17] ERROR - UserRepository - findById - Usuari amb id 3 no existeix
+[2025-12-03 18:51:17] ERROR - UserService - getUserById - Usuari amb id 3 no existeix
+[2025-12-03 18:56:47] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 18:56:47] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 18:56:47] ERROR - UserService - getAllUsers - Error obtenint tots els usuaris - Exception: StatementCallback; bad SQL grammar [SELECT * FROM users]
+[2025-12-03 21:14:12] INFO - UserService - getAllUsers - Obtenint tots els usuaris
+[2025-12-03 21:14:12] INFO - UserRepository - findAll - Consultant tots els usuaris
+[2025-12-03 21:15:07] INFO - UserService - saveUser - Creant nou usuari amb email: string
+[2025-12-03 21:15:07] INFO - UserRepository - save - Creant usuari amb email: string
+[2025-12-03 21:15:08] ERROR - UserService - saveUser - Error creant usuari amb email: string - Exception: PreparedStatementCallback; bad SQL grammar [INSERT INTO users (name, email, password, description, data_created, data_updated) VALUES (?, ?, ?, ?, ?, ?)]
+[2025-12-03 21:19:37] INFO - UserService - saveUser - Creant nou usuari amb email: string
+[2025-12-03 21:19:37] INFO - UserRepository - save - Creant usuari amb email: string
+[2025-12-03 21:19:37] ERROR - UserService - saveUser - Error creant usuari amb email: string - Exception: PreparedStatementCallback; bad SQL grammar [INSERT INTO users (name, email, password, description, data_created, data_updated) VALUES (?, ?, ?, ?, ?, ?)]
+[2025-12-03 21:23:45] INFO - UserService - saveUser - Creant nou usuari amb email: string
+[2025-12-03 21:23:45] ERROR - UserService - saveUser - Error creant usuari amb email: string - Exception: PreparedStatementCallback; bad SQL grammar [INSERT INTO users (name, email, password, description, data_created, data_updated, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)]
+[2025-12-03 21:27:18] INFO - UserService - saveUser - Creant nou usuari amb email: string
+[2025-12-03 21:27:18] ERROR - UserService - saveUser - Error creant usuari amb email: string - Exception: PreparedStatementCallback; bad SQL grammar [INSERT INTO users (name, email, password, description, data_created, data_updated, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)]
+[2025-12-03 21:34:03] INFO - UserService - saveUser - Creant nou usuari amb email: string
+[2025-12-03 21:34:03] ERROR - UserService - saveUser - Error creant usuari amb email: string - Exception: PreparedStatementCallback; bad SQL grammar [INSERT INTO users (name, email, password, description, data_created, data_updated, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)]
+[2025-12-03 21:34:49] INFO - UserService - saveUser - Creant nou usuari amb email: string
+[2025-12-03 21:34:49] ERROR - UserService - saveUser - Error creant usuari amb email: string - Exception: PreparedStatementCallback; bad SQL grammar [INSERT INTO users (name, email, password, description, data_created, data_updated, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)]
+[2025-12-03 21:35:17] INFO - UserService - saveUser - Creant nou usuari amb email: string
+[2025-12-03 21:35:17] ERROR - UserService - saveUser - Error creant usuari amb email: string - Exception: PreparedStatementCallback; bad SQL grammar [INSERT INTO users (name, email, password, description, data_created, data_updated, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)]
+[2025-12-03 21:58:02] INFO - UserService - getAllUsers - Total usuaris recuperats: 2
+[2025-12-03 21:58:02] INFO - UserController - getAllUsers - Peticio GET /api/users
+[2025-12-03 21:58:35] ERROR - UserService - saveUser - Error creant usuari: string - Exception: PreparedStatementCallback; SQL [INSERT INTO users (name, email, password, description, data_created, data_updated, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)]; Duplicate entry 'string' for key 'users.email'
+[2025-12-03 21:58:35] ERROR - UserController - createUser - Error creant usuari: string - Exception: PreparedStatementCallback; SQL [INSERT INTO users (name, email, password, description, data_created, data_updated, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)]; Duplicate entry 'string' for key 'users.email'
+[2025-12-03 21:58:50] INFO - UserService - saveUser - Usuari creat correctament: string4
+[2025-12-03 21:58:50] INFO - UserController - createUser - Usuari creat: string4
+[2025-12-03 21:58:57] INFO - UserService - getAllUsers - Total usuaris recuperats: 3
+[2025-12-03 21:58:57] INFO - UserController - getAllUsers - Peticio GET /api/users
+[2025-12-03 22:00:19] INFO - UserService - saveUser - Usuari creat correctament: string5
+[2025-12-03 22:00:19] INFO - UserController - createUser - Usuari creat: string5
+[2025-12-03 22:00:24] INFO - UserService - getAllUsers - Total usuaris recuperats: 4
+[2025-12-03 22:00:24] INFO - UserController - getAllUsers - Peticio GET /api/users
+[2025-12-03 22:00:41] INFO - UserService - saveUser - Usuari creat correctament: string20
+[2025-12-03 22:00:41] INFO - UserController - createUser - Usuari creat: string20
+[2025-12-03 22:00:48] INFO - UserService - getAllUsers - Total usuaris recuperats: 5
+[2025-12-03 22:00:48] INFO - UserController - getAllUsers - Peticio GET /api/users
+[2025-12-03 22:01:11] INFO - UserService - saveUser - Usuari creat correctament: string21
+[2025-12-03 22:01:11] INFO - UserController - createUser - Usuari creat: string21
+[2025-12-03 22:01:20] INFO - UserService - getAllUsers - Total usuaris recuperats: 6
+[2025-12-03 22:01:20] INFO - UserController - getAllUsers - Peticio GET /api/users
